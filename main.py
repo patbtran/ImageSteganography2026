@@ -1,5 +1,6 @@
 import tkinter as tk
 import steganoengine
+import hasher
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 
@@ -13,19 +14,22 @@ root.minsize(400, 400)
 root.maxsize(400, 400)
 
 img_path = ""
-
+img_size = (0,0)
 
 def load_image():
     global img_path
     path = filedialog.askopenfilename(filetypes=[("Image files", "*.png *.jpeg")])
     if not path:
-        status_label.config(text="no image loaded.", fg="red")
+        status_label.config(text="operation canceled.", fg="red")
         return
 
     global preview_img
+    global img_size
 
     try:
-        new_pil = Image.open(path).resize((128, 128))
+        new_pil = Image.open(path)
+        img_size = new_pil.size
+        new_pil = new_pil.resize((128, 128))
     except Exception:
         status_label.config(text="failed to load!", fg="red")
         return
@@ -34,6 +38,7 @@ def load_image():
         status_label.config(text="image loaded!", fg="green")
         preview_img = ImageTk.PhotoImage(new_pil)
         preview_panel.config(image=preview_img)
+        print("Loaded from ", path)
 
 
 def save_image():
@@ -43,9 +48,20 @@ def save_image():
     msg = msg_text.get("1.0", "end-1c")  # get our hidden message text from the message box
     key = key_value.get()  # get key from key entry
 
+    ##dry run that will generate a similar output to the real encryption,
+    ##using this to check if the encrypted message will fit in the image! -asher
+    key_hash = steganoengine.sha256(key.encode("utf-8")).digest()
+    encrypted_txt = hasher.encrypt(msg, key_hash)
+
+    if len(encrypted_txt) > max_hiding_chars(*img_size):
+        messagebox.showerror("FATAL ERROR!", "Image is too small for message!")
+        status_label.config(text="message is too big!", fg="red")
+        return
+
     if len(key) == 0:
-        choice = messagebox.askquestion("WARNING", "you haven't provided a key, are you sure about this?",
-                                        icon="warning")
+        choice = messagebox.askquestion("WARNING",
+        "you haven't provided a key, are you sure about this?", icon="warning")
+
         if choice == "no":
             status_label.config(text="no key provided!", fg="red")
             return
@@ -54,7 +70,7 @@ def save_image():
     save_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("Image files", "*.png *.jpeg")])
 
     if save_path:
-        print("Saving to ", img_path)
+        print("Saving to ", save_path)
         steganoengine.encode(img_path, msg, key, save_path)
         status_label.config(text="secret message saved!", fg="green")
     else:
@@ -88,6 +104,8 @@ def send_to_clipboard(msg):
     root.clipboard_clear()
     root.clipboard_append(msg)
 
+def max_hiding_chars(w,h):
+    return (w * h) // 3 # 1 character needs 3 pixels
 
 ##widgets
 load_button = tk.Button(root, text="Load image", command=load_image, bg="black", fg="white", activebackground="black",

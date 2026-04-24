@@ -2,11 +2,11 @@ from PIL import Image
 from hashlib import sha256
 import hasher
 
-
+#converts the message text into a list of 8bit strings
 def generateData(data):
     return [format(ord(i), "08b") for i in data]
 
-
+#encodes binary data into pixel values
 def modifyPixels(pix, data):
     datalist = generateData(data)
     lendata = len(datalist)
@@ -30,7 +30,7 @@ def modifyPixels(pix, data):
         yield tuple(pixels[3:6])
         yield tuple(pixels[6:9])
 
-
+#encodes modified pixels into new img
 def encode_enc(new_img, data):
     w = new_img.size[0]
     (x, y) = (0, 0)
@@ -40,6 +40,7 @@ def encode_enc(new_img, data):
         x = 0 if x == w - 1 else x + 1
         y += 1 if x == 0 else 0
 
+#handles saving/encoding
 def encode(filename, msg, key, save_path):
     image = Image.open(filename, 'r')
     key = sha256(key.encode('utf-8')).digest()
@@ -54,7 +55,7 @@ def encode(filename, msg, key, save_path):
     new_img_name = save_path
     new_img.save(new_img_name)
 
-
+#decodes hidden text from image using key
 def decode(filename, key):
     key = sha256(key.encode('utf-8')).digest()
     image = Image.open(filename, 'r')

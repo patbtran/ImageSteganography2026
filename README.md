@@ -5,4 +5,4 @@ NEEDS PILLOW AND PYCRYPTODOME
 pip install pillow
 pip install pycryptodome
 
-load a .png image 
+load a .png image, enter your secret message, then click "encode image". you will be prompted to save the file at a location of your choosing. to decode a message in an image, load the encoded image and press "decode image".

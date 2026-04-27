@@ -105,7 +105,7 @@ def send_to_clipboard(msg):
     root.clipboard_append(msg)
 
 def max_hiding_chars(w,h):
-    return (w * h) // 3 # 1 character needs 3 pixels
+    return (w * h) // 3 # 1 character needs 3 pixels. 8 bits for the char, 1 bit for the end flag.
 
 ##widgets
 load_button = tk.Button(root, text="Load image", command=load_image, bg="black", fg="white", activebackground="black",

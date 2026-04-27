@@ -48,7 +48,7 @@ def encode(filename, msg, key, save_path):
     data = hasher.encrypt(msg, key)
 
     if not data:
-        raise ValueError("Data is empty")
+        raise ValueError("no data!")
 
     new_img = image.copy()
     encode_enc(new_img, data)

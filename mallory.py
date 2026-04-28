@@ -42,13 +42,13 @@ def start_bruteforce():
     global start_time
     start_time = time.time()
     print(start_time)
-    #increment max length after all combos of current length are checked
+    #check all possible combinations of length 1-50
     for length in range(0, 50):
         if time.time() - start_time > max_time:
             break
         status_label.config(text=f"increasing to length {length}", fg="white")
         print("Starting with length", length)
-    # .product gives all combinations, repeat repeats!
+        #individual length check
         for combo in itertools.product(chars, repeat=length):
             if time.time() - start_time > max_time:
                 break
@@ -59,12 +59,14 @@ def start_bruteforce():
                 return try_string
             except ValueError:
                 pass
+        # we will eventually iterate through all possible combos of that length, so we increment
         print("Exhausted length", length)
     print("couldn't find key in max time")
     return None
 
 def show_results():
     cracked_key = start_bruteforce()
+    #returned on invalid max time
     if cracked_key is TypeError:
         return
     if cracked_key is None:

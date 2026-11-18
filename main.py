@@ -109,13 +109,11 @@ def max_hiding_chars(w,h):
 
 ##widgets
 load_button = tk.Button(root, text="Load image", command=load_image)
-save_button = tk.Button(root, text="Encode image", command=save_image, bg="black", fg="white", activebackground="black",
-                        activeforeground="gray40")
+save_button = tk.Button(root, text="Encode image", command=save_image)
 
 key_label = tk.Label(root, text="Key:", bg="black", fg="white")
 key_value = tk.Entry(root, bg="gray20", fg="white", insertbackground="white", width=30)
-decode_button = tk.Button(root, text="Decode loaded file", command=decode_image, bg="black", fg="white",
-                          activebackground="black", activeforeground="gray40")
+decode_button = tk.Button(root, text="Decode loaded file", command=decode_image)
 
 msg_label = tk.Label(root, text="Message:", bg="black", fg="white")
 msg_text = tk.Text(root, height=5, width=30, bg="gray20", fg="white", insertbackground="white")
